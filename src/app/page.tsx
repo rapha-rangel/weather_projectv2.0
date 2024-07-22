@@ -1,95 +1,90 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client'
+import { DefaultLayout } from "@/components/default-page-layout";
+import { Main } from "@/components/main";
+import { useSelectCity } from "@/hooks/useSelectCity";
+import { useEffect } from "react";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
+import dynamic from "next/dynamic";
+import { Header } from "@/components/header";
+import { ThemeProvider } from "styled-components";
+import { useSearch } from "@/hooks/useSearch";
+import { DefaultTheme } from "styled-components";
 
-export default function Home() {
+
+
+ function Home() {
+  const {items} = useLocalStorage();
+  const {setInfoCity}= useSelectCity();
+  const {darkMode} = useSearch();
+
+  useEffect(()=>{
+    if(items){
+      setInfoCity({
+        lat: items[0].latitude,
+        long: items[0].longitude,
+        city:items[0].city,
+        country:items[0].country });
+      }
+  }, [])
+
+  const Theme ={
+    color:{
+      background:{
+        sun: "#F2EE6A",
+        moon: "#8C48DE"
+      },
+    },
+    layoutBreakpoint: "2000px",
+    largeBreakpoint: "1440px",
+    laptopBreakpoint: "888px",
+    tabletBreakpoint: "780px",
+    headerBreakPoint:"650px"
+  };
+
+  const LightTheme :DefaultTheme ={
+    color:{
+      background:{
+        cards: "#b5b4b8" ,
+        sun: Theme.color.background.sun,
+        moon: Theme.color.background.moon,
+        body: "#e6e2e2d1",
+      },
+      text: "#00000",
+      subTitle:"#ffff",
+    },
+    layoutBreakpoint: Theme.layoutBreakpoint,
+    largeBreakpoint:Theme.largeBreakpoint,
+    laptopBreakpoint:Theme.laptopBreakpoint,
+    tabletBreakpoint:Theme.tabletBreakpoint,
+    headerBreakPoint:Theme.headerBreakPoint
+  };
+
+  const DarkTheme :DefaultTheme= {
+    color:{
+      background:{
+        cards: "#424240",
+        sun: Theme.color.background.sun,
+        moon: Theme.color.background.moon,
+        body: "#000000",
+      },
+      text: "#ffff",
+      subTitle:"#b5b4b8" 
+    },
+    layoutBreakpoint: Theme.layoutBreakpoint,
+    largeBreakpoint:Theme.largeBreakpoint,
+    laptopBreakpoint:Theme.laptopBreakpoint,
+    tabletBreakpoint:Theme.tabletBreakpoint,
+    headerBreakPoint:Theme.headerBreakPoint
+  }
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    <ThemeProvider theme={darkMode?DarkTheme:LightTheme}>
+      <DefaultLayout>
+        <Header/>
+        <Main/>
+      </DefaultLayout>
+    </ThemeProvider>
   );
 }
+
+export default dynamic (()=> Promise.resolve(Home), {ssr: false})
