@@ -87,7 +87,8 @@ export function SearchBoxMobile(){
           openDropBox={openDropBox} 
           loadingSearch={loadingSearch} 
           setOpenDropBox={setOpenDropBox}
-          setInputValue={setInputValue}/>
+          setInputValue={setInputValue}
+          inputValue={inputValue}/>
       </InputBox>
     </Box>
   ) 
