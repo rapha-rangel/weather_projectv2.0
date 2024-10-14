@@ -13,9 +13,6 @@ export function useWeather() {
 
   useEffect(()=> {
     getWeather();
-    setInterval(()=>{
-      getWeather()
-    },600000)
   }, [infoCity, graus]);
 
   const [currentWeather, setCurrentWeather] = useState<WeatherPainelTypes>();

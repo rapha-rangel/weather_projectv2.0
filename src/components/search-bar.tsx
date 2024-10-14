@@ -74,11 +74,12 @@ export function SearchBar (){
         setLoadingSearch={setLoadingSearch}/>
       <DropBox 
         position={true}
-        data={inputValue.length> 1?geocodeData:[]} 
+        data={inputValue.length> 1 ?geocodeData:[]} 
         openDropBox={openDropBox} 
         loadingSearch={loadingSearch} 
         setOpenDropBox={setOpenDropBox}
-        setInputValue={setInputValue}/>
+        setInputValue={setInputValue}
+        inputValue={inputValue}/>
     </InputBox>
     </>
   )

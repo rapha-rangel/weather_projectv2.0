@@ -31,7 +31,7 @@ function Home() {
           country:"" 
         })
       }
-  }, [])
+  }, [items])
 
   const Theme ={
     color:{

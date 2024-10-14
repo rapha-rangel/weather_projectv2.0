@@ -21,6 +21,7 @@ export const ButtonsBox = styled.div`
   display: flex;
   gap: 50px;
   align-items: center;
+ 
 `
 export function Header() {
   const{graus, setGraus,darkMode, setDarkMode} =useSearch();

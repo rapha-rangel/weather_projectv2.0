@@ -1,6 +1,6 @@
 import { SearchIcon } from "@/icons/icons";
 import styled from "styled-components";
-import {ChangeEvent} from 'react';
+import {ChangeEvent, useEffect} from 'react';
 
 interface InputProps{
 	inputValue: string
@@ -55,22 +55,34 @@ const Icon = styled.div<IconTypes>`
 `
 
 export function Input({handleChange, setOpenDropBox,setLoadingSearch,inputValue,openBox, setInputValue}: InputProps){
-	const handleSearch =(e:ChangeEvent<HTMLInputElement>)=>{
-		e.preventDefault();
+	const searchInput =(value: string)=>{
+		handleChange(value);
+		setTimeout(()=>{
+			setLoadingSearch(false);
+			setOpenDropBox(true);
+		}, 500)
+		
+	}
+
+	useEffect(()=>{
+		const handler = setTimeout(() => {
+			if (inputValue) {
+				searchInput(inputValue);
+			}
+	}, 1000);
+
+	return () => {
+			clearTimeout(handler);
+	};
+	},[inputValue] )
+
+	const handleInputChange =(e:ChangeEvent<HTMLInputElement>)=>{
 		setInputValue(e.target.value);
-		if(e.target.value.length < 2){
+		setLoadingSearch(true);
+		if(e.target.value.length<2){
 			setOpenDropBox(false)
 			setLoadingSearch(false)
 			handleChange("");
-		} else{
-			setLoadingSearch(true)
-			setTimeout(()=> {
-				handleChange(e.target.value);
-			}, 2000);
-			setTimeout(()=> {
-				setLoadingSearch(false);
-			}, 2800)
-			setOpenDropBox(true);
 		}
 	}
 
@@ -84,10 +96,11 @@ export function Input({handleChange, setOpenDropBox,setLoadingSearch,inputValue,
   return(
 		<Box>
       <Icon
-			$type={"glass"}
-			$show={true}>{SearchIcon}</Icon>
+				$type={"glass"}
+				$show={true}>{SearchIcon}
+			</Icon>
 			<InputTag type="text" placeholder="Search city..."
-				onChange={handleSearch}
+				onChange={handleInputChange}
 				value={inputValue}
 				$open={openBox}
 			/>

@@ -35,10 +35,12 @@ const Box = styled.div<BoxTypes>`
   display: flex;
   justify-content: space-between;
   gap:10px;
-  cursor:${props=> !props.$open && props.$selectcity ? "pointer": "cursor"};
+  display: ${props=> !props.$open && props.$selectcity ? "flex": "none"};
+  cursor: pointer;
   transition: all cubic-bezier(0.165, 0.84, 0.44, 1) 0.6s;
   &:hover{
-    transform:${props=> !props.$open && props.$selectcity  ? "scale(1.05)": "scale(1)"};
+    transform:scale(1.05);
+    box-shadow: 0px 0px 2px 6px  ${props=>props.theme.color.boxshadow};
   }
   ${(props)=>{
     if(props.$select){
@@ -129,7 +131,7 @@ export function CityPanel({data, index}: CityPanelProps) {
         <TextWeather>{weatherCode?.texto}</TextWeather>
       </BoxInfo>
       <BoxInfo>
-        <Image src={weatherCode?.imagem.src} alt=""/>
+        <Image src={weatherCode?.imagem.src} alt={weatherCode?.texto}/>
         <DegreeText>{data.temperature.toFixed(0)}°</DegreeText>
       </BoxInfo>
     </Box>

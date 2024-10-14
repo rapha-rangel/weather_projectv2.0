@@ -12,6 +12,7 @@ interface DropBoxProps {
 	position: boolean
 	setInputValue:  (value: string)=> void
 	setOpenDropBox: (value: boolean)=> void
+	inputValue: string
 }
 
 interface ListDropBoxTypes {
@@ -64,13 +65,16 @@ const ElementDropBox = styled.li`
 	cursor: pointer;
 	display: flex;
 	flex-direction: column;
-	padding: 10px 20px 10px 20px;
+	padding: 10px 20px;
 	list-style: none;
 	font-size: 12px;
 	background-color: ${props=> props.theme.color.background.cards};
 	border-color: ${props=> props.theme.color.text};
 	border-bottom: 1px solid;
-	transition: all 1s;
+	transition: all 500ms;
+	&:last-of-type{
+		border-bottom: none;
+	}
 	span{
 		font-weight: 400;
   	color: ${props=> props.theme.color.subTitle};
@@ -84,10 +88,21 @@ const ElementDropBox = styled.li`
 	&:hover{
 		background-color: white;
 		color: black;
+		transition: all 250ms;
 		span{
 			color:black;
+			transition: all 250ms;
 		}
 	}
+`
+const ElementDropBoxNotFound = styled.li`
+	flex-direction: column;
+	padding: 20px 20px;
+	list-style: none;
+	font-size: 16px;
+	background-color: ${props=> props.theme.color.background.cards};
+	border-color: ${props=> props.theme.color.text};
+	transition: all 1s;
 `
 const LoadingIconBox =styled.div<LoadingTypes>`
 	position: ${props=> props.$position?"absolute":"relative"};
@@ -106,10 +121,11 @@ const LoadingIconBox =styled.div<LoadingTypes>`
 	}
 `
 
-export function DropBox({data,openDropBox, loadingSearch, setOpenDropBox, setInputValue, position}:DropBoxProps) {
+export function DropBox({data,openDropBox, loadingSearch, setOpenDropBox, setInputValue, position, inputValue}:DropBoxProps) {
 	const {setInfoCity} = useSelectCity();
 	const {updateLocalStorage}= useLocalStorage();
 	const {setOpenModal}=useOpenModal();
+	console.log(data)
 
 	const handleLatLong =(latitude: number,longitude:number, city: string , country: string)=>{
 		let cityItem = localStorage.getItem("cities-items");
@@ -118,7 +134,7 @@ export function DropBox({data,openDropBox, loadingSearch, setOpenDropBox, setInp
 			let cityItemArr = JSON.parse(cityItem);
 			let existingCity = cityItemArr.filter((item:{latitude:number, longitude: number})=> item.latitude ===latitude && item.longitude ===longitude)
 				if(existingCity.length ===0 ){
-					if(cityItemArr.length>=4){
+					if(cityItemArr.length>=5){
 						cityItemArr.shift();
 					} 
 				cityItemArr.push({
@@ -132,11 +148,13 @@ export function DropBox({data,openDropBox, loadingSearch, setOpenDropBox, setInp
 			}];
 			updateLocalStorage(newItem);
 		}
+		
 		const params={
 			lat:latitude, 
 			long:longitude, 
 			city,country
 		}
+
 		setOpenDropBox(false);
 		setInputValue("");
 		setOpenModal(false);
@@ -151,8 +169,7 @@ export function DropBox({data,openDropBox, loadingSearch, setOpenDropBox, setInp
 				<ListDropBox 
 					$open={openDropBox}
 					$position={position}>
-					{data && 
-						data?.map(({city, state, country, latitude, longitude}, index:number)=>(
+					{data && data?.map(({city, state, country, latitude, longitude}, index:number)=>(
 							<ElementDropBox key={index} onClick={()=>handleLatLong(latitude, longitude, city, country)}>
 								<span>{country}</span>
 								<div>
@@ -160,6 +177,12 @@ export function DropBox({data,openDropBox, loadingSearch, setOpenDropBox, setInp
 								</div>
 							</ElementDropBox>
 					))}
+					{data.length ===0 && inputValue?
+						<ElementDropBoxNotFound>
+							<p>City not found</p>
+						</ElementDropBoxNotFound>: null
+					}
+					
 				</ListDropBox>
 			}
 		</>

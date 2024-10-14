@@ -11,7 +11,7 @@ export function rangeTemperatureForDay (temp: number[], day:number){
             cur[1] === acc[1] ? [cur, acc]: acc
   })
   const indexOfMaxOcurrence:any=[];
-  Object.keys(obj).forEach((key, index)=> ocorrencias.map(oc => {
+  Object.keys(obj).forEach((key)=> ocorrencias.map(oc => {
     if(Array.isArray(oc)) {
       if(JSON.stringify(key) === JSON.stringify(oc[0])) indexOfMaxOcurrence.push(key)
     } else{

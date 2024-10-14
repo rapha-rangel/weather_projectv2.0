@@ -36,12 +36,13 @@ const $showOffAnimation=(position: number, color:string) => keyframes`
 `
 
 const SpanColor= styled.span<SpanColorTypes>`
-width: 100%;
+  width: 100%;
   background-color: white;
   top:0;
   left: 0;
   position: absolute;
   border-radius: 25px;
+ 
   ${props =>{
     if(props.$select){
       return css`

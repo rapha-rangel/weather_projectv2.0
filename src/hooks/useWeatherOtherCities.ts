@@ -70,7 +70,7 @@ export function useWeatherOtherCities() {
                       temperature:tempDay, longitude: longs[index], latitude: lats[index],
           city: place.city, country: place.country  })
     })
-    setOtherCitiesWeather(weatherDay.slice(0,3))
+    setOtherCitiesWeather(weatherDay.slice(0,4))
     setTimeout(()=>{
       setLoading(false)
     },3000);
