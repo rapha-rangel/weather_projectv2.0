@@ -3,17 +3,24 @@ import { GeocodeTypes } from "@/types/geocode-types";
 import { LoadingIcon } from "@/icons/icons";
 import { useSelectCity } from "@/hooks/useSelectCity";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { useOpenModal } from "@/hooks/useOpenModal";
 
 interface DropBoxProps {
 	data: GeocodeTypes[]
 	openDropBox: boolean
 	loadingSearch: boolean
+	position: boolean
 	setInputValue:  (value: string)=> void
 	setOpenDropBox: (value: boolean)=> void
 }
 
 interface ListDropBoxTypes {
 	$open: boolean
+	$position:boolean
+}
+
+interface LoadingTypes {
+	$position:boolean
 }
 
 const $showAnimation = keyframes`
@@ -30,11 +37,11 @@ const $showOffAnimation = keyframes`
   100%{  transform: rotate(-360deg); }
 `
 const ListDropBox=styled.ul<ListDropBoxTypes>`
-	position: absolute;
+	position: ${props=> props.$position?"absolute":"relative"};
 	width: 100%;
 	flex-direction: column;
 	z-index: 10;
-
+	top: ${props=> props.$position?"52px":"0px"};
 	${props =>{
     if(props.$open){
       return css`
@@ -47,7 +54,7 @@ const ListDropBox=styled.ul<ListDropBoxTypes>`
     }}};
 	transition: all 0.4s ease-in-out;
 	:first-of-type{
-		border-radius: 25px 25px 0px 0px;
+		border-radius: 0px;
 	}
 	:last-of-type{
 		border-radius: 0px 0px 25px 25px;
@@ -82,25 +89,27 @@ const ElementDropBox = styled.li`
 		}
 	}
 `
-const LoadingIconBox =styled.div`
-	position: absolute;
+const LoadingIconBox =styled.div<LoadingTypes>`
+	position: ${props=> props.$position?"absolute":"relative"};
 	padding: 10px 20px;
 	width: 100%;
+	top: ${props=> props.$position?"52px":"0px"};
 	background-color: ${props=> props.theme.color.background.cards};
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	border-radius: 25px;
+	border-radius: 0px 0px 25px 25px;
 	svg{
 		font-size: 38px;
-		color: #5c8fe7;
+		color:${props=> props.theme.color.loading};
 		animation: ${loadingAnimation} infinite 1s linear;
 	}
 `
 
-export function DropBox({data,openDropBox, loadingSearch, setOpenDropBox, setInputValue}:DropBoxProps) {
+export function DropBox({data,openDropBox, loadingSearch, setOpenDropBox, setInputValue, position}:DropBoxProps) {
 	const {setInfoCity} = useSelectCity();
 	const {updateLocalStorage}= useLocalStorage();
+	const {setOpenModal}=useOpenModal();
 
 	const handleLatLong =(latitude: number,longitude:number, city: string , country: string)=>{
 		let cityItem = localStorage.getItem("cities-items");
@@ -109,19 +118,18 @@ export function DropBox({data,openDropBox, loadingSearch, setOpenDropBox, setInp
 			let cityItemArr = JSON.parse(cityItem);
 			let existingCity = cityItemArr.filter((item:{latitude:number, longitude: number})=> item.latitude ===latitude && item.longitude ===longitude)
 				if(existingCity.length ===0 ){
-					if(cityItemArr.length>=3){
+					if(cityItemArr.length>=4){
 						cityItemArr.shift();
 					} 
 				cityItemArr.push({
-					latitude, longitude, city, country,weatherCode: 1,temperature:28
+					latitude, longitude, city, country
 				})
 				updateLocalStorage(cityItemArr);
 			} 
 		}else{
 			const newItem = [{
-				latitude, longitude, city, country, weatherCode: 1,temperature:28
+				latitude, longitude, city, country
 			}];
-			console.log(newItem)
 			updateLocalStorage(newItem);
 		}
 		const params={
@@ -129,27 +137,31 @@ export function DropBox({data,openDropBox, loadingSearch, setOpenDropBox, setInp
 			long:longitude, 
 			city,country
 		}
-		setInfoCity(params)
 		setOpenDropBox(false);
 		setInputValue("");
+		setOpenModal(false);
+		setInfoCity(params);
 	}
   return(
 		<>
-		{loadingSearch ? 
-			<LoadingIconBox>{LoadingIcon}</LoadingIconBox>
-		:
-			<ListDropBox $open={openDropBox}>
-				{data && 
-					data?.map(({city, state, country, latitude, longitude}, index:number)=>(
-						<ElementDropBox key={index} onClick={()=>handleLatLong(latitude, longitude, city, country)}>
-							<span>{country}</span>
-							<div>
-								<p>{city},{state}</p>
-							</div>
-						</ElementDropBox>
-				))}
-			</ListDropBox>
-		}
+			{loadingSearch ? 
+				<LoadingIconBox
+					$position={position}>{LoadingIcon}</LoadingIconBox>
+			:
+				<ListDropBox 
+					$open={openDropBox}
+					$position={position}>
+					{data && 
+						data?.map(({city, state, country, latitude, longitude}, index:number)=>(
+							<ElementDropBox key={index} onClick={()=>handleLatLong(latitude, longitude, city, country)}>
+								<span>{country}</span>
+								<div>
+									<p>{city},{state}</p>
+								</div>
+							</ElementDropBox>
+					))}
+				</ListDropBox>
+			}
 		</>
 	)
 }

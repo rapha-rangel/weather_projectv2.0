@@ -24,13 +24,11 @@ const Box = styled.div`
     width: 30%;
   }
 `
-
 const PainelBox = styled.div`
   display: flex;
   flex-direction: column;
   background-color:${props=> props.theme.color.background.cards} ;
   border-radius: 20px;
-
   border: none;
   padding: 30px 30px;
   animation:${showCards} 2s cubic-bezier(0.165, 0.84, 0.44, 1) ;
@@ -123,7 +121,11 @@ export function MainPanel ({weatherData, selectedCity, loading}: MainPanelProps 
           </Line>
           <Line>
             <TextMiddle>Feel Like: <span>{Number(weatherData?.apparentTemperature).toFixed(1)}</span> °C</TextMiddle>
-            <TextMiddle><span>{Number(weatherData?.minTemperature).toFixed(1)}</span>° to <span>{Number(weatherData?.maxTemperature).toFixed(1)}</span>°</TextMiddle>
+            <TextMiddle>
+              <span>{Number(weatherData?.minTemperature).toFixed(1)}</span>
+              ° to 
+              <span>{Number(weatherData?.maxTemperature).toFixed(1)}</span>°
+            </TextMiddle>
           </Line>
         </PainelBox>
     }

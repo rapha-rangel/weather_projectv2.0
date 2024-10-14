@@ -1,9 +1,11 @@
 import styled,{keyframes, css} from "styled-components";
-import snowImage from "../assets/snow.png";
 import { WeatherCodeResponse } from "@/utils/weather-code-response";
 import { useSelectCity } from "@/hooks/useSelectCity";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { WeatherOtherCitiesTypes } from "@/types/wheather-types";
+import { useOpenModal } from "@/hooks/useOpenModal";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { moveArrayElement } from "@/utils/move-array-items";
 
 interface CityPanelProps {
   data: WeatherOtherCitiesTypes
@@ -12,6 +14,8 @@ interface CityPanelProps {
 interface BoxTypes {
   $select:boolean
   $position: number
+  $open: boolean
+  $selectcity: boolean
 }
 
 const showCards =($position:number)=> keyframes`
@@ -31,10 +35,10 @@ const Box = styled.div<BoxTypes>`
   display: flex;
   justify-content: space-between;
   gap:10px;
-  cursor: pointer;
+  cursor:${props=> !props.$open && props.$selectcity ? "pointer": "cursor"};
   transition: all cubic-bezier(0.165, 0.84, 0.44, 1) 0.6s;
   &:hover{
-    transform: scale(1.05);
+    transform:${props=> !props.$open && props.$selectcity  ? "scale(1.05)": "scale(1)"};
   }
   ${(props)=>{
     if(props.$select){
@@ -86,24 +90,39 @@ export function CityPanel({data, index}: CityPanelProps) {
   const weatherCode =WeatherCodeResponse(data.weatherCode);
   const [selectAnimation, setSelectAnimation] = useState(false);
   const {setInfoCity, infoCity} = useSelectCity();
+  const [choiseOtherCity, setChoiseOtherCity] = useState(false);
+  const {openModal}=useOpenModal();
+  const {items,updateLocalStorage} =useLocalStorage();
 
-  const handleSelectCity=(country: string, city: string, lat: number, long: number)=>{
-    if(infoCity.long ===long && infoCity.lat===lat) return;
+  useEffect(()=>{
+    if(Number(infoCity.long) ===data.longitude && Number(infoCity.lat)===data.latitude){
+      setChoiseOtherCity(false);
+    } else{
+      setChoiseOtherCity(true);
+    }
+  },[])
+
+  const handleSelectCity=(country: string, city: string, lat: number, long: number, open: boolean, index: number)=>{
+    if(Number(infoCity.long) ===long && Number(infoCity.lat)===lat|| open ===true) return;
     setSelectAnimation(true);
     setTimeout(()=>{
-      setSelectAnimation(false)
+      setSelectAnimation(false);
       const params ={
         country, city, lat, long
       }
-      setInfoCity(params)
+      setInfoCity(params);
+     
+    updateLocalStorage(moveArrayElement(items, index))
     },1000)
-
   }
+
   return(
     <Box 
       $position={index}
+      $open={openModal}
       $select={selectAnimation}
-      onClick={()=>handleSelectCity(data.country, data.city, data.latitude, data.longitude)}>
+      $selectcity={choiseOtherCity}
+      onClick={()=>handleSelectCity(data.country, data.city, data.latitude, data.longitude, openModal, index)}>
       <BoxInfo>
         <TextCountry>{data.country}</TextCountry>
         <TextCity>{data.city}</TextCity>

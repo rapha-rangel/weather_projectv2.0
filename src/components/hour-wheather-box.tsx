@@ -7,7 +7,6 @@ interface HourWeatherBox {
   weather: WeatherHourlyTypes
   index: number
 }
-
 interface BoxTypes {
   $position: number
 }

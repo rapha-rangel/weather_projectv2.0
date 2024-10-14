@@ -1,27 +1,42 @@
 import styled, { keyframes,css } from "styled-components";
 import { GrausFilterTypes } from "@/types/graus-filter-types";
-import { useSearch } from "@/hooks/useSearch";
+import { DarkModeTypes } from "@/types/dark-mode-types";
 
+
+interface ButtonSelectProps{
+  context: GrausFilterTypes|DarkModeTypes
+  handleContext:(value: any)=> void
+  iconLeft:{
+    icon: string|JSX.Element
+    color: string
+  }
+  iconRight:{
+    icon: string|JSX.Element
+    color: string
+  }
+}
 interface OptionTypes{
   $select: boolean
 }
 interface SpanColorTypes{
   $select: boolean
   position: number
+  color: string
 }
-const $showAnimation = keyframes`
+
+const $showAnimation=(color:string) => keyframes`
   0%{ height: 10%; top:50%;}
-  100% { height: 100%; background-color: white;}
+  100% { height: 100%; background-color:${color};}
 `
-const $showOffAnimation=(position: number) => keyframes`
-  0% {  height: 100%;  opacity:1; }
-  50% { height: 10%; top:50%; transform: translatex(0px) }
+const $showOffAnimation=(position: number, color:string) => keyframes`
+  0% {  height: 100%;  opacity:1;background-color:${color} }
+  50% { height: 10%; top:50%; transform: translatex(0px) ;background-color:${color}}
   75% { height: 10%;opacity:1; top:50%; transform: translatex(${position}px) }
   100%{ height: 0%; transform: translatex(${position}px); top:50%;opacity:0;}
 `
 
 const SpanColor= styled.span<SpanColorTypes>`
-  width: 100%;
+width: 100%;
   background-color: white;
   top:0;
   left: 0;
@@ -30,11 +45,11 @@ const SpanColor= styled.span<SpanColorTypes>`
   ${props =>{
     if(props.$select){
       return css`
-        animation:${$showAnimation} 1s cubic-bezier(0.165, 0.84, 0.44, 1) 0.7s forwards ;
+        animation:${$showAnimation(props.color===""?"#ffff":props.color==="sun"?props.theme.color.background.sun: props.theme.color.background.moon)} 1s cubic-bezier(0.165, 0.84, 0.44, 1) 0.7s forwards ;
       `
     }else{
       return css`
-        animation:${$showOffAnimation(props.position)} 1s cubic-bezier(0.165, 0.84, 0.44, 1) forwards ;
+        animation:${$showOffAnimation(props.position, props.color===""?"#ffff":props.color==="sun"?props.theme.color.background.sun: props.theme.color.background.moon)} 1s cubic-bezier(0.165, 0.84, 0.44, 1) forwards ;
       `
     }}};
 `
@@ -45,7 +60,7 @@ const Box = styled.div`
   gap:10px;
   border-radius: 25px;
 `
-const Option = styled.div<OptionTypes>`
+const Option = styled.div`
   position: relative;
   display: flex;
   align-items: center;
@@ -55,36 +70,38 @@ const Option = styled.div<OptionTypes>`
   border-radius: 25px;
   cursor: pointer;
 `
-
 const OptionText = styled.h3<OptionTypes>`
   z-index: 10;
-  font-size: 25px;
+  font-size: 30px;
   font-weight: 700;
   color: ${props => props.$select? "black": "white"};
   transition: 1.2s all;
 `
 
-export function ButtonSelect() {
-  const {graus, setGraus} = useSearch();
+export function ButtonSelect({context, handleContext, iconLeft, iconRight }:ButtonSelectProps) {
 
-  const handleClick=(value: GrausFilterTypes)=>{
-    setGraus(value)
-  }
+  const handleClick=(value: GrausFilterTypes|DarkModeTypes)=>{
+    handleContext(value)
+  };
+  
   return(
     <Box>
-      <Option onClick={()=>handleClick(GrausFilterTypes.CELSIUS)} 
-        $select={graus===GrausFilterTypes.CELSIUS}>
-          <OptionText
-            $select={graus===GrausFilterTypes.CELSIUS}>°C</OptionText >
-        <SpanColor $select={graus===GrausFilterTypes.CELSIUS}
-        position={60}/>
+      <Option onClick={()=>handleClick(iconLeft.icon==="°C"?GrausFilterTypes.CELSIUS:DarkModeTypes.LIGHT)} >
+        <OptionText
+          $select={iconLeft.icon==="°C"?context===GrausFilterTypes.CELSIUS: context===DarkModeTypes.LIGHT}>{iconLeft.icon}
+        </OptionText >
+        <SpanColor 
+          $select={iconLeft.icon==="°C"?context===GrausFilterTypes.CELSIUS: context===DarkModeTypes.LIGHT}
+          position={60}
+          color={iconLeft.color}/>
       </Option>
-      <Option onClick={()=>handleClick(GrausFilterTypes.FAHRENHEIT)} 
-        $select={graus===GrausFilterTypes.FAHRENHEIT}>
-          <OptionText
-            $select={graus===GrausFilterTypes.FAHRENHEIT}>°F</OptionText >
-        <SpanColor $select={graus===GrausFilterTypes.FAHRENHEIT}
-          position={-60}/>
+      <Option onClick={()=>handleClick(iconRight.icon==="°F"?GrausFilterTypes.FAHRENHEIT: DarkModeTypes.DARK)}>
+        <OptionText
+          $select={iconRight.icon==="°F"?context===GrausFilterTypes.FAHRENHEIT:context===DarkModeTypes.DARK}>{iconRight.icon}
+        </OptionText >
+        <SpanColor $select={iconRight.icon==="°F"?context===GrausFilterTypes.FAHRENHEIT:context===DarkModeTypes.DARK}
+          position={-60}
+          color={iconRight.color}/>
       </Option>
     </Box>
   )

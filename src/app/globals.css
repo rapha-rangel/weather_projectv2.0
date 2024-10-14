@@ -1,10 +1,3 @@
-:root {
-  --background-cards: #424240;
-  --text-color: #ffff;
-  --sun-background-color:#F2EE6A;
-  --moon-background-color:#8C48DE;
-  --text-color-card: #b5b4b8;
-}
 
 * {
   box-sizing: border-box;

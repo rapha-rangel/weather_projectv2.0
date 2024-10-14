@@ -1,14 +1,20 @@
-"use client"
-
+import { useOpenModal } from "@/hooks/useOpenModal";
+import { ReactNode } from "react";
 import styled from "styled-components";
 
+interface BoxType {
+  $open: boolean
+}
+interface LayoutProps{
+  children: ReactNode
+}
 
-export const DefaultLayout = styled.div`
+export const Box = styled.div<BoxType>`
   min-height: 100vh;
   background-color: ${props=> props.theme.color.background.body};
   color: ${props=> props.theme.color.text};
-  /* opacity: 0.6;
-  filter: blur(2px); */
+  opacity:${props=> props.$open?0.6:1};
+  filter:${props=> props.$open?"blur(2px)":"blur(0px)"};
   padding: 30px ;
   margin: auto;
   transition: all 1s;
@@ -16,3 +22,13 @@ export const DefaultLayout = styled.div`
     padding:30px 5% ;
   }
 `
+
+export function DefaultLayout({children}: LayoutProps){
+  const {openModal} = useOpenModal();
+  return (
+    <Box
+      $open={openModal}>
+      {children}
+    </Box>
+  )
+}

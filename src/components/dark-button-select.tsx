@@ -1,4 +1,3 @@
-import { useState } from "react";
 import styled, { keyframes,css } from "styled-components";
 import { DarkModeTypes } from "@/types/dark-mode-types";
 import { SunIcon, MoonIcon } from "@/icons/icons";
@@ -70,11 +69,9 @@ const OptionText = styled.h3<OptionTypes>`
 export function DarkButtonSelect() {
   const {darkMode, setDarkMode}= useSearch();
 
-
   const handleClick=(value: DarkModeTypes)=>{
-    setDarkMode(value)
-  }
-
+    setDarkMode(value);
+  };
 
   return(
     <Box>

@@ -1,7 +1,5 @@
-"use client"
 import { ReactNode, createContext, useState } from "react";
 import {SelectCityTypes} from '@/types/geocode-types';
-import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 export const SelectCityContext = createContext({
   infoCity:{

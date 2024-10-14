@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { Forecast } from "./forecast";
 import { useWeatherDaily } from "@/hooks/useWeatherDaily";
 import { Loading } from "./loading";
+import { useEffect } from "react";
 
 
 const Box = styled.div`

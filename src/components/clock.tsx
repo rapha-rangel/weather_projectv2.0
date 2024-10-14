@@ -1,6 +1,7 @@
 import { formatHour } from "@/utils/format-hour";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+
 const TextMiddle = styled.p`
   font-size: 16px;
 `

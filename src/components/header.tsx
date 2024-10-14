@@ -3,7 +3,9 @@
 import styled from "styled-components";
 import { SearchBar } from "./search-bar";
 import { ButtonSelect } from "./button-select";
-import { DarkButtonSelect } from "./dark-button-select";
+import { useSearch } from "@/hooks/useSearch";
+import { SunIcon, MoonIcon } from "@/icons/icons";
+
 
 export const Box = styled.section`
   width: 100%;
@@ -21,12 +23,23 @@ export const ButtonsBox = styled.div`
   align-items: center;
 `
 export function Header() {
+  const{graus, setGraus,darkMode, setDarkMode} =useSearch();
   return (
     <Box>
       <SearchBar/>
       <ButtonsBox>
-        <ButtonSelect/>
-        <DarkButtonSelect/>
+        <ButtonSelect
+          context={graus}
+          handleContext={setGraus}
+          iconLeft={{icon:"°C", color:""}}
+          iconRight={{icon:"°F", color:""}}
+        />
+        <ButtonSelect
+          context={darkMode}
+          handleContext={setDarkMode}
+          iconLeft={{icon:SunIcon, color:"sun"}}
+          iconRight={{icon:MoonIcon, color:"moon"}}
+        />
       </ButtonsBox>
     </Box>
   )

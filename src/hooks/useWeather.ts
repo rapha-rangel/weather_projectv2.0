@@ -13,7 +13,10 @@ export function useWeather() {
 
   useEffect(()=> {
     getWeather();
-  }, [infoCity.lat, graus]);
+    setInterval(()=>{
+      getWeather()
+    },600000)
+  }, [infoCity, graus]);
 
   const [currentWeather, setCurrentWeather] = useState<WeatherPainelTypes>();
   const url = "https://api.open-meteo.com/v1/forecast";
@@ -25,7 +28,6 @@ export function useWeather() {
     "daily": ["temperature_2m_max", "temperature_2m_min"],
     "timezone": "America/Sao_Paulo",
     "forecast_days": 1,
-    
   };
 
   const getWeather= async()=>{

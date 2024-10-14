@@ -9,21 +9,27 @@ import { Header } from "@/components/header";
 import { ThemeProvider } from "styled-components";
 import { useSearch } from "@/hooks/useSearch";
 import { DefaultTheme } from "styled-components";
+import { SearchBoxMobile } from "@/components/search-box-mobile";
 
-
-
- function Home() {
+function Home() {
   const {items} = useLocalStorage();
   const {setInfoCity}= useSelectCity();
   const {darkMode} = useSearch();
 
   useEffect(()=>{
-    if(items){
+    if(items.length> 0){
       setInfoCity({
-        lat: items[0].latitude,
-        long: items[0].longitude,
-        city:items[0].city,
-        country:items[0].country });
+        lat: items[items.length-1].latitude,
+        long: items[items.length-1].longitude,
+        city:items[items.length-1].city,
+        country:items[items.length-1].country });
+      }else{
+        setInfoCity({
+          lat: 0,
+          long: 0,
+          city:"",
+          country:"" 
+        })
       }
   }, [])
 
@@ -33,6 +39,7 @@ import { DefaultTheme } from "styled-components";
         sun: "#F2EE6A",
         moon: "#8C48DE"
       },
+      loading:"#5c8fe7"
     },
     layoutBreakpoint: "2000px",
     largeBreakpoint: "1440px",
@@ -49,8 +56,10 @@ import { DefaultTheme } from "styled-components";
         moon: Theme.color.background.moon,
         body: "#e6e2e2d1",
       },
-      text: "#00000",
+      loading: Theme.color.loading,
+      text: "#000000",
       subTitle:"#ffff",
+      boxshadow:Theme.color.background.sun
     },
     layoutBreakpoint: Theme.layoutBreakpoint,
     largeBreakpoint:Theme.largeBreakpoint,
@@ -67,8 +76,10 @@ import { DefaultTheme } from "styled-components";
         moon: Theme.color.background.moon,
         body: "#000000",
       },
+      loading: Theme.color.loading,
       text: "#ffff",
-      subTitle:"#b5b4b8" 
+      subTitle:"#b5b4b8",
+      boxshadow:Theme.color.background.moon
     },
     layoutBreakpoint: Theme.layoutBreakpoint,
     largeBreakpoint:Theme.largeBreakpoint,
@@ -81,8 +92,15 @@ import { DefaultTheme } from "styled-components";
     <ThemeProvider theme={darkMode?DarkTheme:LightTheme}>
       <DefaultLayout>
         <Header/>
-        <Main/>
+        {items.length>0?
+          <Main/>
+          :
+          <div>
+            Não possui dados
+          </div>
+        }
       </DefaultLayout>
+      <SearchBoxMobile/>
     </ThemeProvider>
   );
 }

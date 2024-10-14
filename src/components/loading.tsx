@@ -18,7 +18,7 @@ const LoadingIconBox =styled.div`
   align-items: center;
 	svg{
 		font-size: 90px;
-		color: #5c8fe7;
+		color:${props=> props.theme.color.loading};
 		animation: ${loadingAnimation} infinite 1s linear;
 	}
 `

@@ -4,6 +4,8 @@ import { PiSunHorizon } from "react-icons/pi";
 import { PiMoon } from "react-icons/pi";
 import { FaSnowflake } from "react-icons/fa6";
 import { TbLoader2 } from "react-icons/tb";
+import { IoIosArrowRoundBack } from "react-icons/io";
+
 
 
 export const SearchIcon = <IconContext.Provider value={{}}>
@@ -24,4 +26,8 @@ export const SnowIcon = <IconContext.Provider value={{}}>
 
 export const LoadingIcon = <IconContext.Provider value={{}}>
                               <TbLoader2/>
+                            </IconContext.Provider>
+
+export const BackIcon = <IconContext.Provider value={{}}>
+                              <IoIosArrowRoundBack/>
                             </IconContext.Provider>

@@ -16,7 +16,6 @@ export function useWeatherOtherCities() {
 
   useEffect(()=> {
     getWeather();
-    console.log(items)
   }, [items,infoCity, graus]);
 
   const [otherCitiesWeather, setOtherCitiesWeather] = useState<WeatherOtherCitiesTypes[]>([]);
@@ -47,6 +46,7 @@ export function useWeatherOtherCities() {
       const utcOffsetSeconds = res.utcOffsetSeconds();
       const latitude = res.latitude();
       const longitude = res.longitude();
+      console.log(longitude, latitude)
       const current = res.current()!;
       const daily = res.daily()!;
       const weatherData = {
@@ -62,14 +62,15 @@ export function useWeatherOtherCities() {
         },
       };
       for (let i = 0; i < weatherData.daily.time.length; i++) {
-        weatherCodeDay =weatherData.daily.weatherCode[i]
+        weatherCodeDay =weatherData.daily.weatherCode[i],
+        console.log(i)
       }
       tempDay =weatherData.current.temperature2m 
       weatherDay.push({weatherCode:weatherCodeDay,
-                      temperature:tempDay, longitude, latitude,
+                      temperature:tempDay, longitude: longs[index], latitude: lats[index],
           city: place.city, country: place.country  })
     })
-    setOtherCitiesWeather(weatherDay)
+    setOtherCitiesWeather(weatherDay.slice(0,3))
     setTimeout(()=>{
       setLoading(false)
     },3000);

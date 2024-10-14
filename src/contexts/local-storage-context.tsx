@@ -1,15 +1,13 @@
-"use client"
-
-import { useEffect, createContext, useState, ReactNode, SetStateAction} from "react";
-import {WeatherOtherCitiesTypes} from '@/types/wheather-types'
+import { useEffect, createContext, useState, ReactNode} from "react";
+import {WeatherLocalStorageTypes} from '@/types/wheather-types'
 interface LocalStorageContextType{
-  items: WeatherOtherCitiesTypes[];
-  updateLocalStorage:(value: WeatherOtherCitiesTypes[])=>void
+  items: WeatherLocalStorageTypes[];
+  updateLocalStorage:(value: WeatherLocalStorageTypes[])=>void
 }
 
 export const LocalStorageContext = createContext<LocalStorageContextType>({
   items:[],
-  updateLocalStorage:(value: WeatherOtherCitiesTypes[])=>{}
+  updateLocalStorage:(value: WeatherLocalStorageTypes[])=>{}
 })
 
 interface ProviderProps{
@@ -18,7 +16,7 @@ interface ProviderProps{
 
 export function LocalStorageContextProvider({children}: ProviderProps){
 
-  const [items, setItems] = useState<WeatherOtherCitiesTypes[]>([]);
+  const [items, setItems] = useState<WeatherLocalStorageTypes[]>([]);
 
   useEffect(() => {
     if( typeof window === "undefined") return;
@@ -28,7 +26,7 @@ export function LocalStorageContextProvider({children}: ProviderProps){
     }
   }, [])
 
-  const updateLocalStorage =(value:WeatherOtherCitiesTypes[])=>{
+  const updateLocalStorage =(value:WeatherLocalStorageTypes[])=>{
     setItems(value);
     localStorage.setItem("cities-items", JSON.stringify(value));
   }

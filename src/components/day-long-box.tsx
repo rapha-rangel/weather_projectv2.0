@@ -31,8 +31,7 @@ export function DayLongBox (){
   return(
     <>
       {loading?
-      <LoadingBox><Loading/></LoadingBox>
-        
+        <LoadingBox><Loading/></LoadingBox>
       :
         <Box>
           {hourlyWeatherData &&

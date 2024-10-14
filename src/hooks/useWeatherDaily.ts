@@ -28,7 +28,7 @@ export function useWeatherDaily() {
   };
 
   const getWeather= async()=>{
-    if(!infoCity&& !infoCity) return;
+    if(!infoCity.lat&& !infoCity.long) return;
     setLoading(true);
     const responses = await fetchWeatherApi(url, FormatParams(params, graus));
     const range = (start: number, stop: number, step: number) =>
@@ -75,7 +75,7 @@ export function useWeatherDaily() {
     setDailyWeather(tempDay)
     setTimeout(()=>{
       setLoading(false)
-    },3000)
+    }, 3000)
   }
   return {
 		dailyWeatherData: dailyWeather,

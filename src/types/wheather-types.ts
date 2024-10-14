@@ -34,3 +34,10 @@ export interface WeatherOtherCitiesTypes {
     city:string, 
     country: string
 }
+
+export interface WeatherLocalStorageTypes {
+	longitude: number, 
+	latitude: number,
+	city:string, 
+	country: string
+}

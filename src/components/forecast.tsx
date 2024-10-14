@@ -3,7 +3,6 @@ import {WeatherDailyTypes} from "@/types/wheather-types";
 import { WeatherCodeResponse } from "@/utils/weather-code-response";
 import { formatWeekDay } from "@/utils/format-week-day";
 import { FormatRangeForecast } from "@/utils/format-range-forecast";
-import { useEffect } from "react";
 
 interface  ForecastProps {
   day: WeatherDailyTypes
@@ -15,6 +14,9 @@ interface RangeLinePosition{
 }
 interface BoxTypes{
   $position: number
+}
+interface PointTypes {
+  $pos: number
 }
 
 const showCards =($position: number)=> keyframes`
@@ -83,11 +85,23 @@ const RangeLine = styled.div`
   background-color: ${props=> props.theme.color.background.body};
   border-radius: 10px;
   position: relative;
+  :last-child{
+    display: none;
+  }
+`
+const Point = styled.div<PointTypes>`
+  width: 2px;
+  height: 4px;
+  background-color: ${props=> props.theme.color.text};
+  position: absolute;
+  bottom: 0;
+  left: ${({$pos})=> $pos}%;
+  z-index: 10;
 `
 const RangeLinePosition = styled.div<RangeLinePosition>`
   width: ${({$width})=> $width}%;
   height: 8px;
-  background-color: #4082e4;
+  background-color: ${props=> props.theme.color.loading};
   border-radius: 10px;
   position: absolute;
   top: 0%;
@@ -95,8 +109,10 @@ const RangeLinePosition = styled.div<RangeLinePosition>`
 `
 
 export function Forecast ({day, index}: ForecastProps){
+
   const weatherResponse =WeatherCodeResponse(day.weatherCode);
   const rangeForecast = FormatRangeForecast(day.rangeTemperature);
+  const arrPoint =Array(Math.floor(day.rangeTemperature.range)).fill(1);
 
   return (
     <Box
@@ -110,6 +126,12 @@ export function Forecast ({day, index}: ForecastProps){
         <DegreeText>{Number(day.minTemperature).toFixed(0)}°</DegreeText>
         <RangeLine>
           <RangeLinePosition $width={rangeForecast.width} $left={rangeForecast.left}/>
+          {arrPoint && arrPoint.map((value,index)=>
+            <Point 
+              key={index}
+              $pos={((index+1)*100)/arrPoint.length}
+            />
+          )}
         </RangeLine>
         <DegreeText>{Number(day.maxTemperature).toFixed(0)}°</DegreeText>
       </LineLast>

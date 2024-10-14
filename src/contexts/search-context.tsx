@@ -1,5 +1,3 @@
-"use client"
-
 import { ReactNode, createContext, useState } from "react";
 import {GrausFilterTypes} from '@/types/graus-filter-types'
 import {DarkModeTypes} from '@/types/dark-mode-types';
