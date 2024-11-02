@@ -7,7 +7,7 @@ Projeto que retorna a previsão do tempo usanod a api open-meteo.
 
 ## Tecnologia Usadas:
 -`Axios`\
--`Tailwind`\
+-`Styled Components`\
 -`typescript`\
 -`Next.js`
 
